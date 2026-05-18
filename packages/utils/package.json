@@ -1,6 +1,7 @@
 {
   "name": "utils",
   "version": "0.0.0",
+  "private": "true",
   "description": "A starter for creating a TypeScript package.",
   "homepage": "https://github.com/author/library#readme",
   "bugs": {
@@ -17,7 +18,8 @@
   ],
   "type": "module",
   "exports": {
-    ".": "./dist/index.mjs",
+    ".": "./src/index.ts",
+    "./*": "./*",
     "./package.json": "./package.json"
   },
   "publishConfig": {
