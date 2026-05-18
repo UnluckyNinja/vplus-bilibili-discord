@@ -1,15 +1,18 @@
 {
-  "name": "server",
+  "name": "backend",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vp dev",
     "build": "tsc && vp build",
-    "preview": "vp preview"
+    "preview": "vp preview",
+    "test": "vp test"
   },
   "dependencies": {
-    "nitro": "catalog:"
+    "nitro": "catalog:",
+    "tough-cookie": "catalog:",
+    "utils": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.2",
