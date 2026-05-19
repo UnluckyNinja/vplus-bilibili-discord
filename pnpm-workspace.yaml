@@ -13,6 +13,7 @@ catalog:
   vite-plus: latest
   nitro: 3.0.260429-beta
   tough-cookie: ^6.0.1
+  zod: ^4.4.3
 overrides:
   vite: "catalog:"
   vitest: "catalog:"

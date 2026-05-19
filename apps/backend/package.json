@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "nitro": "catalog:",
-    "tough-cookie": "catalog:",
-    "utils": "workspace:*"
+    "utils": "workspace:*",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "typescript": "~6.0.2",
