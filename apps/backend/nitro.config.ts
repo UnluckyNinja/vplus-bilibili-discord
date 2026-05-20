@@ -1,6 +1,7 @@
 import { defineConfig } from "nitro";
 
 export default defineConfig({
+  compatibilityDate: "2026-05-20",
   experimental: {
     tasks: true,
   },
@@ -14,6 +15,18 @@ export default defineConfig({
   routeRules: {
     "/api/**": {
       cors: true,
+    },
+  },
+  preset: "cloudflare-module",
+  cloudflare: {
+    deployConfig: true,
+    wrangler: {
+      kv_namespaces: [
+        {
+          binding: "STORAGE",
+          id: "ad6536f98f31470788f90b68188db4d0",
+        },
+      ],
     },
   },
   storage: {
