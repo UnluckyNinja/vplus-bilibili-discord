@@ -1,5 +1,5 @@
 import { defineHandler, defineRouteMeta } from "nitro";
-import { fetchBilibiliFeed, transformFeed } from "../../composables/bilibili.ts";
+import { fetchBilibiliVideo, transformVideo } from "../../composables/bilibili.ts";
 import { pushMessagesToDiscord } from "../../composables/discord.ts";
 
 defineRouteMeta({
@@ -19,11 +19,12 @@ export default defineHandler(async (event) => {
     };
   }
   try {
-    const feed = await fetchBilibiliFeed(mid);
-    const messages = transformFeed(feed);
+    const video = await fetchBilibiliVideo(mid);
+    const messages = transformVideo(video);
     await pushMessagesToDiscord(messages.slice(0, 1), [webhook], atRole ? [atRole] : undefined);
   } catch (error) {
     console.error(error);
+    event.res.status = 500;
     if (error instanceof Error) {
       return {
         error: {

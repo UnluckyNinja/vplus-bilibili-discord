@@ -1,5 +1,5 @@
 import { defineHandler, defineRouteMeta } from "nitro";
-import { fetchBilibiliFeed } from "../../composables/bilibili.ts";
+import { fetchBilibiliVideo } from "../../composables/bilibili.ts";
 
 defineRouteMeta({
   openAPI: {
@@ -10,11 +10,12 @@ defineRouteMeta({
 
 export default defineHandler(async (event) => {
   const mid = event.url.searchParams.get("mid") ?? "2";
-  let feed;
+  let video;
   try {
-    feed = await fetchBilibiliFeed(mid);
+    video = await fetchBilibiliVideo(mid);
   } catch (error) {
     console.error(error);
+    event.res.status = 500;
     if (error instanceof Error) {
       return {
         error: {
@@ -28,6 +29,6 @@ export default defineHandler(async (event) => {
     };
   }
   return {
-    result: feed,
+    result: video,
   };
 });

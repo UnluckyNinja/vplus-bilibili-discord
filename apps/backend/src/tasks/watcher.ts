@@ -1,6 +1,6 @@
 import { defineTask } from "nitro/task";
 import { getTask, listTasks } from "../composables/task";
-import { fetchBilibiliFeed, transformFeed } from "../composables/bilibili";
+import { fetchBilibiliVideo, transformVideo } from "../composables/bilibili";
 import { getLatestFeedTime, setLatestFeedTime } from "../composables/storage";
 import { pushMessagesToDiscord } from "../composables/discord";
 
@@ -36,11 +36,11 @@ async function processTask(taskID: string) {
   //   headers[key] = value
   // }
 
-  let feed: Awaited<ReturnType<typeof fetchBilibiliFeed>> | null = null;
+  let video: Awaited<ReturnType<typeof fetchBilibiliVideo>> | null = null;
   let retry = 3;
-  while (retry-- && (!feed || !feed.data.items?.length || feed.data.items.length === 0)) {
+  while (retry-- && !video) {
     try {
-      feed = await fetchBilibiliFeed(task.mid, {
+      video = await fetchBilibiliVideo(task.mid, {
         headers,
         queries,
         wbi: { imgKey: task.imgKey, subKey: task.subKey },
@@ -49,12 +49,12 @@ async function processTask(taskID: string) {
       console.error(e);
     }
   }
-  if (!feed || !feed.data.items?.length || feed.data.items.length === 0) {
-    console.error(`Fetching feed failed. Task ${task.name} aborted.`);
+  if (!video || !video.data.items?.length || video.data.items.length === 0) {
+    console.error(`Fetching video from bilibili failed. Task ${task.name} aborted.`);
     return;
   }
 
-  const messages = transformFeed(feed);
+  const messages = transformVideo(video);
 
   const lastTimestamp = await getLatestFeedTime(task.mid); // from Storage by mid
   const newMesssages = messages.filter((it) => it.timestamp > (lastTimestamp ?? 0));

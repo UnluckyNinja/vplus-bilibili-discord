@@ -27,6 +27,10 @@ export interface BilibiliOptions {
 
 let queueTimer = 0;
 
+/**
+ * 动态境外完全不可用，请使用视频
+ * @deprecated
+ */
 export async function fetchBilibiliFeed(
   userID: string,
   options: BilibiliOptions = {},
@@ -48,16 +52,16 @@ export async function fetchBilibiliFeed(
     host_mid: userID,
   }).toString();
 
+  while (Date.now() < queueTimer) {
+    await new Promise((r) => setTimeout(r, queueTimer - Date.now()));
+  }
+  queueTimer = Date.now() + 5000; // the first one in the queue get pass will reset timer
+
   signURL(
     target,
     options.wbi?.imgKey ?? "7cd084941338484aae1ad9425b84077c",
     options.wbi?.subKey ?? "4932caff0ff746eab6f01bf08b70ac45",
   );
-
-  while (Date.now() < queueTimer) {
-    await new Promise((r) => setTimeout(r, queueTimer - Date.now()));
-  }
-  queueTimer = Date.now() + 5000; // the first one in the queue get pass will reset timer
 
   const response = await fetch(target, {
     headers: {
@@ -67,7 +71,7 @@ export async function fetchBilibiliFeed(
       Accept: "*/*",
       "Accept-Language": "zh-CN",
       "Accept-Encoding": "gzip, deflate, br, zstd",
-      Referer: "https://space.bilibili.com/2/dynamic",
+      Referer: `https://space.bilibili.com/${userID}/dynamic`,
       Origin: "https://space.bilibili.com",
       DNT: "1",
       "Sec-GPC": "1",
@@ -78,12 +82,13 @@ export async function fetchBilibiliFeed(
       Cookie: "buvid3=ABAB1234-123B-234B-123A-114514AE86BF67168infoc",
       ...options.headers,
     },
-    referrer: "https://space.bilibili.com/2/dynamic",
+    referrer: `https://space.bilibili.com/${userID}/dynamic`,
     method: "GET",
   });
 
   if (!response.ok) {
     // throw error
+    console.error("Bilibili returned: " + response.status + ", " + response.statusText);
   }
 
   return response.json();
@@ -162,5 +167,101 @@ export function transformFeed(json: FeedAPIResult) {
       return null; // 以防API修改出现了新的消息类型，忽略对应消息
     })
     .filter((it) => it) as DynamicInfo[];
+  return result;
+}
+
+// MARK: Videos
+const VIDEO_API = "https://api.bilibili.com/x/space/wbi/arc/search";
+
+export async function fetchBilibiliVideo(
+  userID: string,
+  options: BilibiliOptions = {},
+): Promise<any> {
+  const target = new URL(VIDEO_API);
+
+  target.search = new URLSearchParams({
+    pn: "1",
+    ps: "5",
+    tid: "0",
+    special_type: "",
+    order: "pubdate",
+    index: "0",
+    keyword: "",
+    order_avoided: "true",
+    platform: "web",
+    web_location: "333.1387",
+    dm_img_list: "[]",
+    dm_img_str: "V2ViR0wgMS",
+    dm_cover_img_str:
+      "QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDk4MCBEaXJlY3QzRDExIHZzXzVfMCBwc181XzApLCBvciBzaW1pbGFyR29vZ2xlIEluYy4gKE5WSURJQS",
+    dm_img_inter: '{"ds":[],"wh":[4904,4883,48],"of":[212,424,212]}',
+    ...options.queries,
+    mid: userID,
+  }).toString();
+
+  while (Date.now() < queueTimer) {
+    await new Promise((r) => setTimeout(r, queueTimer - Date.now()));
+  }
+  queueTimer = Date.now() + 5000; // the first one in the queue get pass will reset timer
+
+  signURL(
+    target,
+    options.wbi?.imgKey ?? "7cd084941338484aae1ad9425b84077c",
+    options.wbi?.subKey ?? "4932caff0ff746eab6f01bf08b70ac45",
+  );
+
+  const response = await fetch(target, {
+    headers: {
+      Host: "api.bilibili.com",
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:151.0) Gecko/20100101 Firefox/151.0",
+      Accept: "*/*",
+      "Accept-Language": "zh-CN",
+      "Accept-Encoding": "gzip, deflate, br, zstd",
+      Referer: `https://space.bilibili.com/${userID}/upload/video`,
+      Origin: "https://space.bilibili.com",
+      DNT: "1",
+      "Sec-GPC": "1",
+      "Sec-Fetch-Dest": "empty",
+      "Sec-Fetch-Mode": "cors",
+      "Sec-Fetch-Site": "same-site",
+      Priority: "u=4",
+      Cookie: "buvid3=ABAB1234-123B-234B-123A-114514AE86BF67168infoc",
+      ...options.headers,
+    },
+    referrer: `https://space.bilibili.com/${userID}/upload/video`,
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    // throw error
+    console.error("Bilibili returned: " + response.status + ", " + response.statusText);
+  }
+
+  return response.json();
+}
+
+export function transformVideo(json: any): DynamicInfo[] {
+  const list = json.data?.list?.vlist as any[];
+  if (!list) {
+    throw new Error("Bilibili server returned empty message list");
+  }
+
+  const result = list.map<DynamicInfo>((item: any) => {
+    return {
+      type: "DYNAMIC_TYPE_AV",
+      timestamp: item.created,
+      id_str: "",
+      author: {
+        name: item.author,
+        url: `https://space.bilibili.com/${item.mid}`,
+      },
+      title: item.title ?? "",
+      description: item.description ?? "",
+      length: item.length ?? "",
+      thumbnail: item.pic ?? "",
+      url: `https://www.bilibili.com/video/${item.bvid}`,
+    };
+  });
   return result;
 }

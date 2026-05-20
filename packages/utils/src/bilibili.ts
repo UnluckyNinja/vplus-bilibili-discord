@@ -26,11 +26,12 @@ export function hashQueries(
     wbiImgKey: "",
     wbiSubKey: "",
   },
+  wts?: number,
 ) {
   const { wbiImgKey: imgKey, wbiSubKey: subKey } = keys;
   if (imgKey && subKey) {
     const combinedKey = hashKeys(imgKey + subKey),
-      timestamp = Math.round(Date.now() / 1000),
+      timestamp = wts ?? Math.round(Date.now() / 1000),
       params = Object.assign({}, requestParams, {
         wts: timestamp,
       }),

@@ -338,8 +338,8 @@ export type DynamicInfoBase = {
   timestamp: number;
   author: {
     name: string;
-    url: string;
-    icon_url: string;
+    url?: string;
+    icon_url?: string;
   };
 };
 
