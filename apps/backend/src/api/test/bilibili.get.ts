@@ -14,7 +14,18 @@ export default defineHandler(async (event) => {
   try {
     feed = await fetchBilibiliFeed(mid);
   } catch (error) {
-    return { error };
+    console.error(error);
+    if (error instanceof Error) {
+      return {
+        error: {
+          name: error.name,
+          message: error.message,
+        },
+      };
+    }
+    return {
+      error: "Error occurred, check dashboard.",
+    };
   }
   return {
     result: feed,

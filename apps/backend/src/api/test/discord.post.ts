@@ -23,7 +23,18 @@ export default defineHandler(async (event) => {
     const messages = transformFeed(feed);
     await pushMessagesToDiscord(messages.slice(0, 1), [webhook], atRole ? [atRole] : undefined);
   } catch (error) {
-    return { error };
+    console.error(error);
+    if (error instanceof Error) {
+      return {
+        error: {
+          name: error.name,
+          message: error.message,
+        },
+      };
+    }
+    return {
+      error: "Error occurred, check dashboard.",
+    };
   }
   return {
     result: "Success",
