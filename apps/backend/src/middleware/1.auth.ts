@@ -2,9 +2,9 @@ import { defineHandler } from "nitro";
 import { useRuntimeConfig } from "nitro/runtime-config";
 
 export default defineHandler((event) => {
-  const { apikey } = useRuntimeConfig();
+  const { apiKey } = useRuntimeConfig();
 
-  if (!apikey) {
+  if (!apiKey) {
     event.res.status = 403;
     return `API access is disabled.`;
   }
@@ -17,8 +17,8 @@ export default defineHandler((event) => {
   }
 
   let match = true;
-  for (let i = 0; i < apikey.length; ++i) {
-    if (apikey[i] !== token[i]) {
+  for (let i = 0; i < apiKey.length; ++i) {
+    if (apiKey[i] !== token[i]) {
       match = false;
     }
   }
