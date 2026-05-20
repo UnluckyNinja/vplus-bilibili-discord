@@ -59,8 +59,8 @@ export async function fetchBilibiliFeed(
 
   signURL(
     target,
-    options.wbi?.imgKey ?? "7cd084941338484aae1ad9425b84077c",
-    options.wbi?.subKey ?? "4932caff0ff746eab6f01bf08b70ac45",
+    options.wbi?.imgKey ? options.wbi.imgKey : "7cd084941338484aae1ad9425b84077c",
+    options.wbi?.subKey ? options.wbi.subKey : "4932caff0ff746eab6f01bf08b70ac45",
   );
 
   const response = await fetch(target, {
@@ -206,8 +206,8 @@ export async function fetchBilibiliVideo(
 
   signURL(
     target,
-    options.wbi?.imgKey ?? "7cd084941338484aae1ad9425b84077c",
-    options.wbi?.subKey ?? "4932caff0ff746eab6f01bf08b70ac45",
+    options.wbi?.imgKey ? options.wbi.imgKey : "7cd084941338484aae1ad9425b84077c",
+    options.wbi?.subKey ? options.wbi.subKey : "4932caff0ff746eab6f01bf08b70ac45",
   );
 
   const response = await fetch(target, {

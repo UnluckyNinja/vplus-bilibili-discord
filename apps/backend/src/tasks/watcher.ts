@@ -7,11 +7,11 @@ import { pushMessagesToDiscord } from "../composables/discord";
 async function validateTask(taskID: string) {
   const task = await getTask(taskID);
   if (!task) {
-    console.warn(`[validateTask] ${taskID.slice(6)}... doesn't exist.`);
+    console.warn(`[validateTask] ${taskID.slice(0, 8)}... doesn't exist.`);
     return null;
   }
   if (!task.mid || task.discordWebhook.length === 0) {
-    console.warn(`[validateTask] ${task.name}(${taskID.slice(6)}) is missing key options.`);
+    console.warn(`[validateTask] ${task.name}(${taskID.slice(0, 8)}) is missing key options.`);
     return null;
   }
   return task;
@@ -22,7 +22,7 @@ async function processTask(taskID: string) {
   if (!task) {
     return;
   }
-  console.info(`Processing "${task.name}"(${task.id.slice(0, 6)}...)`);
+  console.info(`Processing "${task.name}"(${task.id.slice(0, 8)}...)`);
 
   const { headers, queries } = task;
 
