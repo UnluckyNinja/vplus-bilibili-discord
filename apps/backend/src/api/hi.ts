@@ -8,5 +8,5 @@ defineRouteMeta({
 });
 
 export default defineHandler((event) => {
-  return ["hi", "/tasks", "/tasks/:id"];
+  return "Hi.";
 });
