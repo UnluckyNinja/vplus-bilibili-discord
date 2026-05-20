@@ -6,7 +6,7 @@ export default defineConfig({
     tasks: true,
   },
   scheduledTasks: {
-    "* * * * *": ["watcher"],
+    "*/5 * * * *": ["watcher"],
   },
   serverDir: "./src",
   runtimeConfig: {
