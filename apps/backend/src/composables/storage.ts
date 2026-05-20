@@ -8,11 +8,8 @@ export function useStorage() {
   if (storage) {
     return storage;
   }
-  if (import.meta.env.HOSTING_PROVIDER === "cloudflare") {
-    storage = nitroStorage("cloudflare");
-    return storage;
-  }
-  throw new Error("Not run in supported environment. Consider adding your own storage");
+  storage = nitroStorage("KV");
+  return storage;
 }
 
 export async function getLatestFeedTime(mid: string) {

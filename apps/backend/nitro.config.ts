@@ -21,6 +21,7 @@ export default defineConfig({
   cloudflare: {
     deployConfig: true,
     wrangler: {
+      name: "worker-bilibili-discord",
       kv_namespaces: [
         {
           binding: "STORAGE",
@@ -30,7 +31,7 @@ export default defineConfig({
     },
   },
   storage: {
-    cloudflare: {
+    KV: {
       driver: "cloudflare-kv-binding", // https://unstorage.unjs.io/drivers/cloudflare
       binding: "STORAGE", // or from env
     },
