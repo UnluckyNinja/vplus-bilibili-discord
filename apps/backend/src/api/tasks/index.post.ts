@@ -18,9 +18,13 @@ export default defineHandler(async (event) => {
   } catch (error) {
     event.res.status = 400;
     if (error instanceof ZodError) {
-      return error.issues;
+      return {
+        error: error.issues,
+      };
     }
-    return "Bad request data";
+    return {
+      error: "Bad request data",
+    };
   }
 
   const result = await createTask(task);

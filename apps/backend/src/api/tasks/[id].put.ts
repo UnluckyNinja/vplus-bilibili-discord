@@ -1,6 +1,6 @@
 import { defineHandler, defineRouteMeta } from "nitro";
 import { TaskZod, updateTask } from "../../composables/task.ts";
-import * as z from "zod";
+import { ZodError } from "zod";
 
 defineRouteMeta({
   openAPI: {
@@ -19,10 +19,14 @@ export default defineHandler(async (event) => {
     task = TaskZod.parse(json);
   } catch (error) {
     event.res.status = 400;
-    if (error instanceof z.ZodError) {
-      return error.issues;
+    if (error instanceof ZodError) {
+      return {
+        error: error.issues,
+      };
     }
-    return "Bad request data";
+    return {
+      error: "Bad request data",
+    };
   }
 
   await updateTask(id, task);
