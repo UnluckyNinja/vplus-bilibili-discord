@@ -14,6 +14,7 @@ catalog:
   nitro: 3.0.260429-beta
   tough-cookie: ^6.0.1
   zod: ^4.4.3
+  wrangler: ^4.95.0
 overrides:
   vite: "catalog:"
   vitest: "catalog:"
@@ -24,3 +25,7 @@ peerDependencyRules:
   allowedVersions:
     vite: "*"
     vitest: "*"
+allowBuilds:
+  esbuild: true
+  sharp: false
+  workerd: true

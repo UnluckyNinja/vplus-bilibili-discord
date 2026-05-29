@@ -210,6 +210,10 @@ export async function fetchBilibiliVideo(
     options.wbi?.subKey ? options.wbi.subKey : "4932caff0ff746eab6f01bf08b70ac45",
   );
 
+  if (import.meta.dev) {
+    console.debug(target.href);
+  }
+
   const response = await fetch(target, {
     headers: {
       Host: "api.bilibili.com",
