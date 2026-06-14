@@ -1,5 +1,5 @@
 import { defineHandler, defineRouteMeta } from "nitro";
-import { fetchBilibiliVideo } from "../../composables/bilibili.ts";
+import { fetchBilibiliVideo, type BilibiliOptions } from "../../composables/bilibili.ts";
 
 defineRouteMeta({
   openAPI: {
@@ -10,9 +10,20 @@ defineRouteMeta({
 
 export default defineHandler(async (event) => {
   const mid = event.url.searchParams.get("mid") ?? "2";
+  let options: BilibiliOptions = {};
+  if (event.req.method === "POST") {
+    try {
+      options = await event.req.json();
+    } catch {
+      event.res.status = 400;
+      return {
+        error: "Invalid JSON payload.",
+      };
+    }
+  }
   let video;
   try {
-    video = await fetchBilibiliVideo(mid);
+    video = await fetchBilibiliVideo(mid, options);
   } catch (error) {
     console.error(error);
     event.res.status = 500;
