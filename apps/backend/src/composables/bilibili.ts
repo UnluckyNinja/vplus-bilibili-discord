@@ -194,7 +194,7 @@ export async function fetchBilibiliVideo(
       console.error("Bilibili returned: " + response.status + ", " + response.statusText);
     }
 
-    return response.json();
+    return (await response.json()).result;
   }
 
   const target = new URL(VIDEO_API);
