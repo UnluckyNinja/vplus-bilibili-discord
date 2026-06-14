@@ -53,7 +53,7 @@ export function hasTask(id: string) {
 
 export async function updateTask(id: string, value: Task) {
   const storage = useStorage();
-  if (!storage.hasItem(TASK_PREFIX + id)) {
+  if (!(await storage.hasItem(TASK_PREFIX + id))) {
     await addIDtoList(id);
   }
   value.id = id;
