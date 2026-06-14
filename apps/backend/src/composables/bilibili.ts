@@ -177,6 +177,26 @@ export async function fetchBilibiliVideo(
   userID: string,
   options: BilibiliOptions = {},
 ): Promise<any> {
+  // another instance deployed elsewhere
+  if (process.env.BILIBILI_PROXY_VIDEO) {
+    const proxy = new URL(process.env.BILIBILI_PROXY_VIDEO);
+
+    if (process.env.BILIBILI_PROXY_TOKEN) {
+      proxy.searchParams.set("mid", userID);
+      proxy.searchParams.set("token", process.env.BILIBILI_PROXY_TOKEN);
+    }
+    const response = await fetch(proxy, {
+      method: "POST",
+      body: JSON.stringify(options),
+    });
+    if (!response.ok) {
+      // throw error
+      console.error("Bilibili returned: " + response.status + ", " + response.statusText);
+    }
+
+    return response.json();
+  }
+
   const target = new URL(VIDEO_API);
 
   target.search = new URLSearchParams({
