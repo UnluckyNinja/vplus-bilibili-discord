@@ -1,4 +1,5 @@
 import { defineConfig } from "nitro";
+import { provider } from "std-env";
 
 export default defineConfig({
   compatibilityDate: "2026-05-20",
@@ -31,12 +32,27 @@ export default defineConfig({
     },
   },
   storage: {
-    KV: {
-      driver: "cloudflare-kv-binding", // https://unstorage.unjs.io/drivers/cloudflare
-      binding: "STORAGE", // or from env
-    },
+    ...determineStorage(),
   },
   typescript: {
     generateTsConfig: true,
   },
 });
+
+function determineStorage() {
+  if (provider === "cloudflare_workers") {
+    return {
+      KV: {
+        driver: "cloudflare-kv-binding", // https://unstorage.unjs.io/drivers/cloudflare
+        binding: "STORAGE", // or from env
+      },
+    };
+  } else if (provider === "netlify") {
+    return {
+      KV: {
+        driver: "netlify-blobs",
+      },
+    };
+  }
+  return undefined;
+}
