@@ -49,7 +49,9 @@ async function processTask(taskID: string) {
       console.error(e);
     }
   }
-  if (!video || !video.data.items?.length || video.data.items.length === 0) {
+  // if (!video || !video.data.items?.length || video.data.items.length === 0) { // feed check
+  if (!video || !video.data.list.vlist || video.data.list.vlist.length === 0) {
+    // video check
     console.error(`Fetching video from bilibili failed. Task ${task.name} aborted.`);
     return;
   }
