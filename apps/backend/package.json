@@ -15,6 +15,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@netlify/blobs": "catalog:",
     "std-env": "catalog:",
     "typescript": "~6.0.2",
     "vite": "catalog:",
