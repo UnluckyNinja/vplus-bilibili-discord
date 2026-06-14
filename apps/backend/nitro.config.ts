@@ -51,6 +51,7 @@ function determineStorage() {
     return {
       KV: {
         driver: "netlify-blobs",
+        deployScoped: true,
       },
     };
   }
